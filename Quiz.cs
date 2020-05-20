@@ -40,7 +40,7 @@ namespace Quiz
 
                 foreach (Question q in questions)
                 {
-                    Console.WriteLine(q.Subject.ToString());
+                    Console.WriteLine(q.Subject);
                     Console.WriteLine();
                     Console.WriteLine($"a. {q.options[0]}");
                     Console.WriteLine($"b. {q.options[1]}");
@@ -53,6 +53,7 @@ namespace Quiz
                     {
                         cki = Console.ReadKey();
                         if (CheckAnswerKey(cki)) isKeyCorrect = true;
+                        else Console.WriteLine("Podaj prawidłową odpowiedź!");
                     }
 
                     if (q.CheckAnswer(q.GetAnswerIndex(cki)))
@@ -134,7 +135,7 @@ namespace Quiz
 
             for (int i = 0; i < number; i++)
             {
-                quiz.Add(this.questions[i]);
+                quiz.Add(this.questions[indexTab[i]]);
                 quiz[i] = ShuffleVariants(quiz[i]);
             }
 
