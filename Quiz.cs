@@ -58,20 +58,20 @@ namespace Quiz
                     Console.WriteLine("\nPoprawna odpowiedź!");
                     points++;
                 }
-                else Console.WriteLine("Niestety, błędna odpowiedź.");
+                else Console.WriteLine("\nNiestety, błędna odpowiedź.");
 
                 Console.WriteLine();
                 Console.WriteLine();
             }
-
+            double percent = CalculateResult();
             Console.Clear();
             Console.WriteLine("Zakończyłeś quiz.");
-            Console.WriteLine($"Twój wynik wynosi {CalculateResult()}%");                         
+            Console.WriteLine($"Twój wynik wynosi {percent}%");                         
         }
 
         public double CalculateResult()
         {
-            return (points / questions.Count) * 100;
+            return ((double)points / questions.Count) * 100;
         }
 
         private bool CheckAnswerKey(ConsoleKeyInfo cki)
