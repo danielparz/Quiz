@@ -18,69 +18,55 @@ namespace Quiz
         public void Play()
         {
             ConsoleKeyInfo cki = new ConsoleKeyInfo();
-            bool wannaPlay = true;
+            
+            Console.Clear();
+            Console.WriteLine("Witaj w quizie!");
+            Console.WriteLine("Zostanie zaraz wylosowanych specjalnie dla Ciebie 5 pytań z dziedziny chemii.");
+            Console.WriteLine("Pod każdym pytaniem będą 4 warianty odpowiedzi, z czego tylko jedna jest prawidłowa.");
+            Console.WriteLine("W celu udzielenia odpowiedzi, naciśnij klawisz na klawiaturze, odpowiadający literze przy wybranej odpowiedzi.");
+            Console.WriteLine("Aby zacząć, naciśnij klawisz ENTER. Powodzenia!");
 
-            while (wannaPlay)
+            bool isKeyCorrect = false;
+            while (!isKeyCorrect)
             {
-                Console.Clear();
-                Console.WriteLine("Witaj w quizie!");
-                Console.WriteLine("Zostanie zaraz wylosowanych specjalnie dla Ciebie 5 pytań z dziedziny chemii.");
-                Console.WriteLine("Pod każdym pytaniem będą 4 warianty odpowiedzi, z czego tylko jedna jest prawidłowa.");
-                Console.WriteLine("W celu udzielenia odpowiedzi, naciśnij klawisz na klawiaturze, odpowiadający literze przy wybranej odpowiedzi.");
-                Console.WriteLine("Aby zacząć, naciśnij klawisz ENTER. Powodzenia!");
+                cki = Console.ReadKey();
+                if (cki.Key == ConsoleKey.Enter) isKeyCorrect = true;
+            }
 
-                bool isKeyCorrect = false;
+            Console.Clear();
+
+            foreach (Question q in questions)
+            {
+                Console.WriteLine(q.Subject);
+                Console.WriteLine();
+                Console.WriteLine($"A. {q.options[0]}");
+                Console.WriteLine($"B. {q.options[1]}");
+                Console.WriteLine($"C. {q.options[2]}");
+                Console.WriteLine($"D. {q.options[3]}");
+
+                isKeyCorrect = false;
+
                 while (!isKeyCorrect)
                 {
                     cki = Console.ReadKey();
-                    if (cki.Key == ConsoleKey.Enter) isKeyCorrect = true;
+                    if (CheckAnswerKey(cki)) isKeyCorrect = true;
+                    else Console.WriteLine("Podaj prawidłową odpowiedź!");
                 }
 
-                Console.Clear();
-
-                foreach (Question q in questions)
+                if (q.CheckAnswer(q.GetAnswerIndex(cki)))
                 {
-                    Console.WriteLine(q.Subject);
-                    Console.WriteLine();
-                    Console.WriteLine($"a. {q.options[0]}");
-                    Console.WriteLine($"b. {q.options[1]}");
-                    Console.WriteLine($"c. {q.options[2]}");
-                    Console.WriteLine($"d. {q.options[3]}");
-
-                    isKeyCorrect = false;
-
-                    while (!isKeyCorrect)
-                    {
-                        cki = Console.ReadKey();
-                        if (CheckAnswerKey(cki)) isKeyCorrect = true;
-                        else Console.WriteLine("Podaj prawidłową odpowiedź!");
-                    }
-
-                    if (q.CheckAnswer(q.GetAnswerIndex(cki)))
-                    {
-                        Console.WriteLine("Poprawna odpowiedź!");
-                        points++;
-                    }
-                    else Console.WriteLine("Niestety, błędna odpowiedź.");
-
-                    Console.WriteLine();
-                    Console.WriteLine();
+                    Console.WriteLine("\nPoprawna odpowiedź!");
+                    points++;
                 }
+                else Console.WriteLine("Niestety, błędna odpowiedź.");
 
-                Console.Clear();
-                Console.WriteLine("Zakończyłeś quiz.");
-                Console.WriteLine($"Twój wynik wynosi {CalculateResult()}%");
                 Console.WriteLine();
                 Console.WriteLine();
-                Console.WriteLine("Chcesz zagrać ponownie? t/n");
-
-                while(cki.Key != ConsoleKey.T || cki.Key != ConsoleKey.N)
-                {
-                    Console.ReadKey();
-                    if (cki.Key == ConsoleKey.N) wannaPlay = false;
-                }
-                points = 0;
             }
+
+            Console.Clear();
+            Console.WriteLine("Zakończyłeś quiz.");
+            Console.WriteLine($"Twój wynik wynosi {CalculateResult()}%");                         
         }
 
         public double CalculateResult()
@@ -104,7 +90,9 @@ namespace Quiz
             int[] indexTab = RandomizeWithoutRepetition(question.options.Count);
 
             for (int i = 0; i < indexTab.Length; i++)
-                newQuestion.options.Add(question.options[i]);
+                newQuestion.options.Add(question.options[indexTab[i]]);
+            newQuestion.Subject = question.Subject;
+            newQuestion.CorrectAnswer = question.CorrectAnswer;
 
             return newQuestion;
         }
